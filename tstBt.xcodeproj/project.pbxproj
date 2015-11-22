@@ -14,6 +14,7 @@
 		247C4E001C02058E00F55D2A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247C4DFE1C02058E00F55D2A /* LaunchScreen.storyboard */; };
 		247C4E0B1C02058E00F55D2A /* tstBtTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C4E0A1C02058E00F55D2A /* tstBtTests.swift */; };
 		247C4E161C02058E00F55D2A /* tstBtUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C4E151C02058E00F55D2A /* tstBtUITests.swift */; };
+		247C4E241C0214A400F55D2A /* Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C4E231C0214A400F55D2A /* Definitions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		247C4E111C02058E00F55D2A /* tstBtUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tstBtUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		247C4E151C02058E00F55D2A /* tstBtUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tstBtUITests.swift; sourceTree = "<group>"; };
 		247C4E171C02058E00F55D2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		247C4E231C0214A400F55D2A /* Definitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Definitions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				247C4DF51C02058E00F55D2A /* AppDelegate.swift */,
 				247C4DF71C02058E00F55D2A /* ViewController.swift */,
+				247C4E231C0214A400F55D2A /* Definitions.swift */,
 				247C4DF91C02058E00F55D2A /* Main.storyboard */,
 				247C4DFC1C02058E00F55D2A /* Assets.xcassets */,
 				247C4DFE1C02058E00F55D2A /* LaunchScreen.storyboard */,
@@ -260,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				247C4DF81C02058E00F55D2A /* ViewController.swift in Sources */,
+				247C4E241C0214A400F55D2A /* Definitions.swift in Sources */,
 				247C4DF61C02058E00F55D2A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,6 +407,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = tstBt/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.krutskikh.oleg.tstBt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -414,6 +419,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = tstBt/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.krutskikh.oleg.tstBt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
