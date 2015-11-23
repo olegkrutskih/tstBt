@@ -11,11 +11,14 @@ import CoreBluetooth
 import QuartzCore
 import Swift
 
+
 class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDelegate {
     
     var centralManager: CBCentralManager!
     var nexxHRMPeripheral: CBPeripheral? = nil
     var refreshTimer: NSTimer? = nil
+    var attentionMin = false
+    var attentionMax = false
     
     // Properties to hold data characteristics for the peripheral device
     var connected = ""
@@ -23,6 +26,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     var manufacturer = ""
     var nexxDeviceData = ""
     var heartRate: UInt16 = 0
+    var avss: AVSS!
+    var backgroundQueue: dispatch_queue_t!
 
     // Properties to handle storing the BPM and heart beat
     var heartRateBPM: UILabel? = nil
@@ -31,11 +36,16 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     @IBOutlet weak var deviceInfo: UITextView!
     @IBOutlet weak var heartImage: UIImageView!
     
+    @IBOutlet weak var minPulse: UITextField!
+    @IBOutlet weak var maxPulse: UITextField!
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         centralManager = CBCentralManager(delegate: self, queue: nil)
+        avss = AVSS()
         refreshTimer = NSTimer(timeInterval: (60.0/60.0), target: self, selector: "doConnect", userInfo: nil, repeats: true)
-        
+        let qualityOfServiceClass = QOS_CLASS_BACKGROUND
+        backgroundQueue = dispatch_get_global_queue(qualityOfServiceClass, 0)
         
     }
 
@@ -54,7 +64,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         self.deviceInfo.userInteractionEnabled = false
         
         // Create your Heart Rate BPM Label
-        self.heartRateBPM = UILabel.init(frame: CGRectMake(55, 30, 75, 50))
+        self.heartRateBPM = UILabel.init(frame: CGRectMake(85, 60, 85, 50))
         self.heartRateBPM!.textColor = UIColor.whiteColor()
         self.heartRateBPM!.text = "0";
         self.heartRateBPM!.font = UIFont(name: "Futura-CondensedMedium", size: 28)
@@ -67,8 +77,55 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         //self.centralManager = centralManager
         
         refreshTimer?.fire()
+        dispatch_async(backgroundQueue, {
+            while true {
+                self.doConnect()
+                self.sayWarning()
+                sleep(5)
+            }
+        })
         
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name:UIKeyboardWillShowNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil)
     }
+    
+    func keyboardWasShown(notification: NSNotification) {
+        var info = notification.userInfo!
+        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        
+        UIView.animateWithDuration(0.1, animations: { () -> Void in
+            self.view.frame.size.height -= keyboardFrame.size.height + 20
+        })
+    }
+    func keyboardWillHide(notification: NSNotification) {
+        var info = notification.userInfo!
+        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        
+        UIView.animateWithDuration(0.1, animations: { () -> Void in
+            self.view.frame.size.height += keyboardFrame.size.height + 20
+        })
+    }
+    
+    func sayWarning(){
+        if (self.connected == "Connected: YES") {
+            let tmr = NSNumber(unsignedShort: self.heartRate).integerValue
+            if (tmr > Int(maxPulse.text!) && (attentionMax != true)) {
+                self.avss.say("Пульс больше \(maxPulse.text!), уменьшите нагрузку.")
+                attentionMin = false
+                attentionMax = true
+            }
+            else if ((tmr < Int(minPulse.text!)) && (attentionMin != true)) {
+                self.avss.say("Пульс меньше \(minPulse.text!), увеличьте нагрузку.")
+                attentionMax = false
+                attentionMin = true
+            } else if ((tmr < Int(maxPulse.text!)) && (tmr > Int(minPulse.text!)) && (attentionMin || attentionMax)) {
+                self.avss.say("Нагрузка нормализована.")
+                attentionMin = false
+                attentionMax = false
+            }
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -82,6 +139,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         let connected = peripheral.state == CBPeripheralState.Connected ? "YES" : "NO"
         self.connected = "Connected: \(connected)"
         NSLog(self.connected);
+        updateInfo()
     }
     
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
@@ -94,6 +152,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             peripheral.delegate = self
             self.centralManager.connectPeripheral(peripheral, options: nil)
         }
+        updateInfo()
     }
     
     func centralManager(central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: NSError?) {
@@ -101,6 +160,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         self.connected = "Connected: \(connected)"
         NSLog(self.connected);
         NSLog("didDisconnectPeripheral")
+        updateInfo()
     }
     
     func doConnect(){
@@ -119,8 +179,8 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
                 centralManager.scanForPeripheralsWithServices(serviceUUIDs, options: nil)
             }
         }
-        
-        NSLog("doConnect")
+        updateInfo()
+        //NSLog("doConnect")
         
     }
     
@@ -190,8 +250,14 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
             self.getBodyLocation(characteristic)
         }
         
+        updateInfo()
+    }
+    
+    func updateInfo(){
         // Add your constructed device information to your UITextView
-        self.deviceInfo.text = "\(self.connected)\n\(self.bodyData)\n\(self.manufacturer)\n"  // 4
+        self.deviceInfo.text = "\(self.connected)\n"
+        self.heartRateBPM!.text = "\(self.heartRate) bpm"
+        self.heartRateBPM!.font = UIFont(name: "Futura-CondensedMedium", size: 28)
     }
     
     
@@ -216,8 +282,7 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
         // Display the heart rate value to the UI if no error occurred
         if ((characteristic.value != nil) || (error != nil)) {   // 4
             self.heartRate = bpm
-            self.heartRateBPM!.text = "\(bpm) bpm"
-            self.heartRateBPM!.font = UIFont(name: "Futura-CondensedMedium", size: 28)
+            updateInfo()
             self.doHeartBeat()
             let tmr = NSNumber(unsignedShort: self.heartRate).doubleValue
             self.pulseTimer = NSTimer(timeInterval: (60.0 / tmr), target: self, selector: "doHeartBeat", userInfo: nil, repeats: false)
@@ -270,6 +335,12 @@ class ViewController: UIViewController, CBCentralManagerDelegate, CBPeripheralDe
     
     @IBAction func tapToHeart(sender: UITapGestureRecognizer) {
         refreshTimer?.fire()
+        if (self.heartRate == 0) {
+            avss.say("Ваш пульс равен нулю. Возможно вы труп?")
+        }
+        else {
+            avss.say("Ваш пульс равен \(self.heartRate)")
+        }
     }
 
     

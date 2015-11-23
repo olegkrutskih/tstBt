@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		243A2AD31C034B23009F85C7 /* AVSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 243A2AD21C034B23009F85C7 /* AVSS.swift */; };
 		247C4DF61C02058E00F55D2A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C4DF51C02058E00F55D2A /* AppDelegate.swift */; };
 		247C4DF81C02058E00F55D2A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C4DF71C02058E00F55D2A /* ViewController.swift */; };
 		247C4DFB1C02058E00F55D2A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247C4DF91C02058E00F55D2A /* Main.storyboard */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		243A2AD21C034B23009F85C7 /* AVSS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVSS.swift; sourceTree = "<group>"; };
 		247C4DF21C02058D00F55D2A /* tstBt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tstBt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		247C4DF51C02058E00F55D2A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		247C4DF71C02058E00F55D2A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				247C4DF51C02058E00F55D2A /* AppDelegate.swift */,
+				243A2AD21C034B23009F85C7 /* AVSS.swift */,
 				247C4DF71C02058E00F55D2A /* ViewController.swift */,
 				247C4E231C0214A400F55D2A /* Definitions.swift */,
 				247C4DF91C02058E00F55D2A /* Main.storyboard */,
@@ -197,6 +200,11 @@
 					247C4DF11C02058D00F55D2A = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 9R8A3T275H;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					247C4E051C02058E00F55D2A = {
 						CreatedOnToolsVersion = 7.2;
@@ -264,6 +272,7 @@
 			files = (
 				247C4DF81C02058E00F55D2A /* ViewController.swift in Sources */,
 				247C4E241C0214A400F55D2A /* Definitions.swift in Sources */,
+				243A2AD31C034B23009F85C7 /* AVSS.swift in Sources */,
 				247C4DF61C02058E00F55D2A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -493,6 +502,7 @@
 				247C4E1C1C02058E00F55D2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		247C4E1D1C02058E00F55D2A /* Build configuration list for PBXNativeTarget "tstBtTests" */ = {
 			isa = XCConfigurationList;
@@ -501,6 +511,7 @@
 				247C4E1F1C02058E00F55D2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		247C4E201C02058E00F55D2A /* Build configuration list for PBXNativeTarget "tstBtUITests" */ = {
 			isa = XCConfigurationList;
@@ -509,6 +520,7 @@
 				247C4E221C02058E00F55D2A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
